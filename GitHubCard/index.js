@@ -4,23 +4,10 @@
 */
 
 //this is how to use azios to call for data
-
-axios.get('https://api.github.com/users/Riley-Robinson')
-
 //.then response to deal with data coming from github 
 
-.then(response => {
-  console.log(response.data.message);
-  response.data.message.forEach( imgSrc => {
-    entryPoint.append(PeopleCard(imgSrc))
-  })
-    
-//error message via .catch 
 
-})
-.catch(error => {
-  console.log("Ya fucked up kid", error)
-})
+
 
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
@@ -43,7 +30,6 @@ axios.get('https://api.github.com/users/Riley-Robinson')
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:*/
@@ -73,35 +59,66 @@ const followersArray = [];
 */
 
 
-
 function PeopleCard(data) {
-  const newCard = document.createElement('div'),
-      imgSrc = document.createElement('img'),
-      cardInfo = document.createElement('div'),
-      userName = document.createElement('h3'),
-      userPar = document.createElement('p'),
-      userLocation = document.createElement('p'),
-      userProfile = document.createElement('p'),
-      userFollowers = document.createElement('p'),
-      userFollowing = document.createElement('p'),
-      userBio = document.createElement('p');
+  const newCard = document.createElement('div');
+  const  imgSrc = document.createElement('img');
+  const  cardInfo = document.createElement('div');
+  const  userName = document.createElement('h3');
+  const   userPar = document.createElement('p');
+  const  userLocation = document.createElement('p');
+  const  userProfile = document.createElement('p');
+  const  profileUrl = document.createElement('a');
+  const  userFollowers = document.createElement('p');
+  const  userFollowing = document.createElement('p');
+  const  userBio = document.createElement('p');
 
     newCard.appendChild(imgSrc);
     newCard.appendChild(cardInfo);
-    cardInfo.appendChild(name);
+
     cardInfo.appendChild(userName);
-    cardInfo.appendChild(userPar);
     cardInfo.appendChild(userLocation);
+    cardInfo.appendChild(userPar);
     cardInfo.appendChild(userProfile);
     cardInfo.appendChild(userFollowers);
     cardInfo.appendChild(userFollowing);
     cardInfo.appendChild(userBio);
 
+    userProfile.appendChild(profileUrl);
+
     newCard.classList.add("card");
     cardInfo.classList.add("card-info");
     userName.classList.add("name");
     userPar.classList.add("username");
+
+ imgSrc.src = data.avatar_url;
+ userName.textContent = data.name;
+ userPar.textContent = data.login;
+ userLocation.textContent = data.location;
+ profileUrl.textContent = data.html_url;
+ userFollowers.textContent = data.followers;
+ userFollowing.textContent = data.following;
+ userBio.textContent = data.bio;
+
+  return newCard;
 }
 
-       
+const cards = document.querySelector(".cards");
+
+axios.get('https://api.github.com/users/Riley-Robinson')
+.then(response => {
+  console.log(response.data);
+  cards.appendChild(PeopleCard(response.data));
+  })
+    
+//error message via .catch 
+
+.catch(error => {
+  console.log("Ya fucked up kid", error)
+})
           
+
+const followersArray = ["chelsabeth", "christianlewis024", "kwmorlock", "ashoffmann90", "	Alfredov96"];
+    followersArray.forEach(userFollowers => {axios.get(`https://api.github.com/users/${userFollowers}`).then(response => {
+      cards.append(PeopleCard(response.data)) 
+    });
+  })
